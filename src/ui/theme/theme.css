@@ -1,0 +1,12 @@
+/**
+ * One-shot theme bootstrap for Tailwind v4 CSS pipelines.
+ *
+ *   @import 'tailwindcss';
+ *   @import '@tetherto/dev-websites-core/ui/theme.css';
+ *
+ * Then override brand in your own CSS:
+ *   :root { --accent: 180 100% 40%; }
+ */
+
+@import './tokens.css';
+@import './preset.css';

@@ -1,13 +1,20 @@
 # `@tetherto/dev-websites-core`
 
-Shared non-UI libraries for WDK / QVAC websites. Domains:
+Shared CMS, SEO, i18n, utils, and UI primitives for WDK / QVAC websites.
 
-| Import                         | Contents                                                                |
-| ------------------------------ | ----------------------------------------------------------------------- |
-| `@tetherto/dev-websites-core/cms`   | Payload `buildCmsConfig`, stock collections, access, Lexical, media I/O |
-| `@tetherto/dev-websites-core/seo`   | `createMetadataFactory`, `getSiteUrl`, `getOgBackgroundDataUrl`         |
-| `@tetherto/dev-websites-core/i18n`  | `Languages` / `LanguageLabel`                                           |
-| `@tetherto/dev-websites-core/utils` | `createLogger`, `toPlainValue`, `stripShikiPreBackground`               |
+| Import | Contents |
+| --- | --- |
+| `@tetherto/dev-websites-core/cms` | Payload `buildCmsConfig`, stock collections, access, Lexical, media I/O |
+| `@tetherto/dev-websites-core/seo` | `createMetadataFactory`, `getSiteUrl`, `getOgBackgroundDataUrl` |
+| `@tetherto/dev-websites-core/i18n` | `Languages` / `LanguageLabel` |
+| `@tetherto/dev-websites-core/utils` | `createLogger`, `toPlainValue`, `stripShikiPreBackground` |
+| `@tetherto/dev-websites-core/ui` | UI primitives (`Button`, `Dialog`, `Pagination`, `Tooltip`, …) + `cn` |
+| `@tetherto/dev-websites-core/ui/a11y` | `focusRingClassName`, `VisuallyHidden` |
+| `@tetherto/dev-websites-core/ui/carousel` | `Carousel` (+ optional `embla-carousel-react` peer) |
+| `@tetherto/dev-websites-core/ui/theme.css` | One-shot: tokens + Tailwind v4 `@theme` preset |
+| `@tetherto/dev-websites-core/ui/theme/tokens.css` | CSS variables (HSL channels) |
+| `@tetherto/dev-websites-core/ui/theme/preset.css` | Tailwind v4 `@theme` map |
+| `@tetherto/dev-websites-core/ui/theme/preset` | JS Tailwind preset for `tailwind.config.ts` |
 
 ### Install
 
@@ -43,6 +50,43 @@ rm -rf node_modules/@tetherto/dev-websites-core && npm install @tetherto/dev-web
 Do **not** import `@tetherto/dev-websites-core/cms` from Client Components — it includes Node-only
 modules (`fs`, Payload, S3). Prefer domain subpaths over the root barrel.
 
+### UI theming
+
+Components use semantic utilities: `bg-accent`, `text-foreground`, `rounded-btn`, `h-btn`.
+
+#### Option A — library theme (playground / new app)
+
+```css
+/* globals.css */
+@import 'tailwindcss';
+@import '@tetherto/dev-websites-core/ui/theme.css';
+
+:root {
+  --accent: 180 100% 40%;
+}
+```
+
+Or with JS config:
+
+```ts
+import type { Config } from 'tailwindcss'
+import uiPreset from '@tetherto/dev-websites-core/ui/theme/preset'
+
+export default {
+  presets: [uiPreset],
+  content: [
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './node_modules/@tetherto/dev-websites-core/dist/ui/**/*.{js,mjs}',
+  ],
+} satisfies Config
+```
+
+#### Option B — app already owns the theme (WDK / QVAC)
+
+Keep your `globals.css` + `tailwind.config.ts`. Do **not** import the library
+preset — ensure the same utility names exist (alias if needed). Still add the
+package UI dist to Tailwind `content` (see glob above).
+
 ### CMS stock
 
 Registered by `buildCmsConfig` in this order. Disable or extend any of them via
@@ -69,9 +113,14 @@ to stock hooks, not replaced.
 
 ### Peer dependencies
 
-The consuming site must install these (all are required peers):
+CMS / Next (required for `/cms` consumers):
 `payload`, `@payloadcms/richtext-lexical`, `@payloadcms/storage-s3`,
 `@aws-sdk/client-s3`, `next`.
+
+UI (required for `/ui` consumers):
+`react`, `react-dom`, `@radix-ui/react-*` (dialog, dropdown-menu, primitive, slot, tooltip),
+`class-variance-authority`, `clsx`, `tailwind-merge`. Optional: `react-icons`,
+`embla-carousel-react` (carousel entry only).
 
 ### Environment variables
 
