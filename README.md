@@ -52,40 +52,44 @@ modules (`fs`, Payload, S3). Prefer domain subpaths over the root barrel.
 
 ### UI theming
 
-Components use semantic utilities: `bg-accent`, `text-foreground`, `rounded-btn`, `h-btn`.
+One **Tailwind theme contract** for all sites (same utility names). Defaults are
+**WDK**. QVAC (and future apps) override values only.
 
-#### Option A — library theme (playground / new app)
+```ts
+// core: @tetherto/dev-websites-core/ui/theme/preset
+// — full theme.extend (colors, type scale, radii, btn sizing)
 
-```css
-/* globals.css */
-@import 'tailwindcss';
-@import '@tetherto/dev-websites-core/ui/theme.css';
+// WDK
+import uiPreset from '@tetherto/dev-websites-core/ui/theme/preset'
+export default {
+  presets: [uiPreset],
+  content: [/* app + dist/ui */],
+}
 
-:root {
-  --accent: 180 100% 40%;
+// QVAC — same keys, different CSS variables / brand values
+import uiPreset from '@tetherto/dev-websites-core/ui/theme/preset'
+export default {
+  presets: [uiPreset],
+  content: [/* app + dist/ui */],
+  theme: {
+    extend: {
+      colors: {
+        accent: { DEFAULT: 'hsl(var(--color-text-action) / <alpha-value>)', /* … */ },
+        // …
+      },
+    },
+  },
 }
 ```
 
-Or with JS config:
+Apps define the CSS variables the preset references (`--color-bg-base`,
+`--color-accent`, …). QVAC also aliases those names onto its Figma tokens in
+`globals.css`. Product-only utilities (e.g. QVAC `text-heading`) stay in the
+app config until migrated onto the shared names.
 
-```ts
-import type { Config } from 'tailwindcss'
-import uiPreset from '@tetherto/dev-websites-core/ui/theme/preset'
-
-export default {
-  presets: [uiPreset],
-  content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@tetherto/dev-websites-core/dist/ui/**/*.{js,mjs}',
-  ],
-} satisfies Config
-```
-
-#### Option B — app already owns the theme (WDK / QVAC)
-
-Keep your `globals.css` + `tailwind.config.ts`. Do **not** import the library
-preset — ensure the same utility names exist (alias if needed). Still add the
-package UI dist to Tailwind `content` (see glob above).
+Optional CSS helpers: `ui/theme/tokens.css`, `ui/theme/preset.css`, `ui/theme.css`
+(short-name contract / Tailwind v4 `@theme`). The JS preset above is the source
+of truth for WDK/QVAC.
 
 ### CMS stock
 
