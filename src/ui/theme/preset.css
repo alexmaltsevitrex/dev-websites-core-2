@@ -1,0 +1,53 @@
+/**
+ * Tailwind v4 theme preset for `@tetherto/dev-websites-core/ui`.
+ *
+ * Maps CSS variables from `tokens.css` → utilities (`bg-accent`, `rounded-btn`, …).
+ *
+ * One-shot (CSS):
+ *   @import '@tetherto/dev-websites-core/ui/theme.css';
+ *
+ * Or stepwise:
+ *   @import '@tetherto/dev-websites-core/ui/theme/tokens.css';
+ *   @import './my-brand.css';   // override --accent, etc.
+ *   @import '@tetherto/dev-websites-core/ui/theme/preset.css';
+ *
+ * If the app already defines the same utilities in `tailwind.config.ts`
+ * (WDK / QVAC today), you do NOT need this file — just keep your config.
+ */
+
+@theme inline {
+  /* Colors */
+  --color-background: hsl(var(--background) / <alpha-value>);
+  --color-surface: hsl(var(--surface) / <alpha-value>);
+  --color-surface-elevated: hsl(var(--surface-elevated) / <alpha-value>);
+  --color-card: hsl(var(--card) / <alpha-value>);
+  --color-card-elevated: hsl(var(--card-elevated) / <alpha-value>);
+
+  --color-foreground: hsl(var(--foreground) / <alpha-value>);
+  --color-secondary: hsl(var(--secondary) / <alpha-value>);
+  --color-muted: hsl(var(--muted) / <alpha-value>);
+
+  --color-accent: hsl(var(--accent) / <alpha-value>);
+  --color-accent-foreground: hsl(var(--accent-foreground) / <alpha-value>);
+  --color-accent-hover: hsl(var(--accent-hover) / <alpha-value>);
+  --color-accent-dim: hsl(var(--accent-dim) / <alpha-value>);
+
+  --color-border: hsl(var(--border) / <alpha-value>);
+  --color-border-subtle: hsl(var(--border-subtle) / <alpha-value>);
+  --color-destructive: hsl(var(--destructive) / <alpha-value>);
+  --color-success: hsl(var(--success) / <alpha-value>);
+  --color-warning: hsl(var(--warning) / <alpha-value>);
+  --color-ring: hsl(var(--ring) / <alpha-value>);
+
+  /* Radius → rounded-btn | rounded-control | rounded-card */
+  --radius-btn: var(--btn-radius);
+  --radius-control: var(--control-radius);
+  --radius-card: var(--card-radius);
+
+  /* Sizing → h-btn | h-btn-sm | px-btn | px-btn-sm | size-btn-sm */
+  --height-btn: var(--btn-h);
+  --height-btn-sm: var(--btn-h-sm);
+  --spacing-btn: var(--btn-px);
+  --spacing-btn-sm: var(--btn-px-sm);
+  --size-btn-sm: var(--btn-h-sm);
+}

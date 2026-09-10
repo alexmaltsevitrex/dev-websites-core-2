@@ -1,13 +1,20 @@
 # `@tetherto/dev-websites-core`
 
-Shared non-UI libraries for WDK / QVAC websites. Domains:
+Shared CMS, SEO, i18n, utils, and UI primitives for WDK / QVAC websites.
 
-| Import                         | Contents                                                                |
-| ------------------------------ | ----------------------------------------------------------------------- |
-| `@tetherto/dev-websites-core/cms`   | Payload `buildCmsConfig`, stock collections, access, Lexical, media I/O |
-| `@tetherto/dev-websites-core/seo`   | `createMetadataFactory`, `getSiteUrl`, `getOgBackgroundDataUrl`         |
-| `@tetherto/dev-websites-core/i18n`  | `Languages` / `LanguageLabel`                                           |
-| `@tetherto/dev-websites-core/utils` | `createLogger`, `toPlainValue`, `stripShikiPreBackground`               |
+| Import | Contents |
+| --- | --- |
+| `@tetherto/dev-websites-core/cms` | Payload `buildCmsConfig`, stock collections, access, Lexical, media I/O |
+| `@tetherto/dev-websites-core/seo` | `createMetadataFactory`, `getSiteUrl`, `getOgBackgroundDataUrl` |
+| `@tetherto/dev-websites-core/i18n` | `Languages` / `LanguageLabel` |
+| `@tetherto/dev-websites-core/utils` | `createLogger`, `toPlainValue`, `stripShikiPreBackground` |
+| `@tetherto/dev-websites-core/ui` | UI primitives (`Button`, `Dialog`, `Pagination`, `Tooltip`, …) + `cn` |
+| `@tetherto/dev-websites-core/ui/a11y` | `focusRingClassName`, `VisuallyHidden` |
+| `@tetherto/dev-websites-core/ui/carousel` | `Carousel` (+ optional `embla-carousel-react` peer) |
+| `@tetherto/dev-websites-core/ui/theme.css` | One-shot: tokens + Tailwind v4 `@theme` preset |
+| `@tetherto/dev-websites-core/ui/theme/tokens.css` | CSS variables (HSL channels) |
+| `@tetherto/dev-websites-core/ui/theme/preset.css` | Tailwind v4 `@theme` map |
+| `@tetherto/dev-websites-core/ui/theme/preset` | JS Tailwind preset for `tailwind.config.ts` |
 
 ### Install
 
@@ -43,6 +50,47 @@ rm -rf node_modules/@tetherto/dev-websites-core && npm install @tetherto/dev-web
 Do **not** import `@tetherto/dev-websites-core/cms` from Client Components — it includes Node-only
 modules (`fs`, Payload, S3). Prefer domain subpaths over the root barrel.
 
+### UI theming
+
+One **Tailwind theme contract** for all sites (same utility names). Defaults are
+**WDK**. QVAC (and future apps) override values only.
+
+```ts
+// core: @tetherto/dev-websites-core/ui/theme/preset
+// — full theme.extend (colors, type scale, radii, btn sizing)
+
+// WDK
+import uiPreset from '@tetherto/dev-websites-core/ui/theme/preset'
+export default {
+  presets: [uiPreset],
+  content: [/* app + dist/ui */],
+}
+
+// QVAC — same keys, different CSS variables / brand values
+import uiPreset from '@tetherto/dev-websites-core/ui/theme/preset'
+export default {
+  presets: [uiPreset],
+  content: [/* app + dist/ui */],
+  theme: {
+    extend: {
+      colors: {
+        accent: { DEFAULT: 'hsl(var(--color-text-action) / <alpha-value>)', /* … */ },
+        // …
+      },
+    },
+  },
+}
+```
+
+Apps define the CSS variables the preset references (`--color-bg-base`,
+`--color-accent`, …). QVAC also aliases those names onto its Figma tokens in
+`globals.css`. Product-only utilities (e.g. QVAC `text-heading`) stay in the
+app config until migrated onto the shared names.
+
+Optional CSS helpers: `ui/theme/tokens.css`, `ui/theme/preset.css`, `ui/theme.css`
+(short-name contract / Tailwind v4 `@theme`). The JS preset above is the source
+of truth for WDK/QVAC.
+
 ### CMS stock
 
 Registered by `buildCmsConfig` in this order. Disable or extend any of them via
@@ -69,9 +117,14 @@ to stock hooks, not replaced.
 
 ### Peer dependencies
 
-The consuming site must install these (all are required peers):
+CMS / Next (required for `/cms` consumers):
 `payload`, `@payloadcms/richtext-lexical`, `@payloadcms/storage-s3`,
 `@aws-sdk/client-s3`, `next`.
+
+UI (required for `/ui` consumers):
+`react`, `react-dom`, `@radix-ui/react-*` (dialog, dropdown-menu, primitive, slot, tooltip),
+`class-variance-authority`, `clsx`, `tailwind-merge`. Optional: `react-icons`,
+`embla-carousel-react` (carousel entry only).
 
 ### Environment variables
 
