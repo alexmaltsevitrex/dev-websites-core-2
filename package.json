@@ -1,7 +1,7 @@
 {
   "name": "@tetherto/dev-websites-core",
-  "version": "0.3.0",
-  "description": "Shared CMS, SEO, i18n, utils, and UI primitives for the WDK / QVAC websites.",
+  "version": "0.3.1",
+  "description": "Shared CMS, SEO, i18n, utils, UI, and analytics primitives for the WDK / QVAC / PEAR / MDK websites.",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public",
@@ -43,6 +43,11 @@
       "import": "./dist/utils/index.mjs",
       "default": "./dist/utils/index.mjs"
     },
+    "./analytics": {
+      "types": "./dist/analytics/index.d.mts",
+      "import": "./dist/analytics/index.mjs",
+      "default": "./dist/analytics/index.mjs"
+    },
     "./ui": {
       "types": "./dist/ui/index.d.mts",
       "import": "./dist/ui/index.mjs",
@@ -83,6 +88,7 @@
   },
   "peerDependencies": {
     "@aws-sdk/client-s3": "^3.0.0",
+    "@next/third-parties": ">=15",
     "@payloadcms/richtext-lexical": "^3.85.1",
     "@payloadcms/storage-s3": "^3.85.1",
     "@radix-ui/react-dialog": "^1.1.0",
@@ -101,6 +107,9 @@
     "tailwind-merge": "^3.0.0"
   },
   "peerDependenciesMeta": {
+    "@next/third-parties": {
+      "optional": true
+    },
     "embla-carousel-react": {
       "optional": true
     },
@@ -111,6 +120,7 @@
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.787.0",
     "@eslint/js": "^9.39.0",
+    "@next/third-parties": "^16.3.2",
     "@payloadcms/richtext-lexical": "3.88.0",
     "@payloadcms/storage-s3": "3.88.0",
     "@radix-ui/react-dialog": "^1.1.15",

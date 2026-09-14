@@ -1,6 +1,6 @@
 # `@tetherto/dev-websites-core`
 
-Shared CMS, SEO, i18n, utils, and UI primitives for WDK / QVAC websites.
+Shared CMS, SEO, i18n, utils, UI, and analytics primitives for WDK / QVAC / PEAR / MDK websites.
 
 | Import | Contents |
 | --- | --- |
@@ -8,6 +8,7 @@ Shared CMS, SEO, i18n, utils, and UI primitives for WDK / QVAC websites.
 | `@tetherto/dev-websites-core/seo` | `createMetadataFactory`, `getSiteUrl`, `getOgBackgroundDataUrl` |
 | `@tetherto/dev-websites-core/i18n` | `Languages` / `LanguageLabel` |
 | `@tetherto/dev-websites-core/utils` | `createLogger`, `toPlainValue`, `stripShikiPreBackground` |
+| `@tetherto/dev-websites-core/analytics` | `GtmLoader`, `createTrackedLink` (optional `@next/third-parties` peer) |
 | `@tetherto/dev-websites-core/ui` | UI primitives (`Button`, `Dialog`, `Pagination`, `Tooltip`, …) + `cn` |
 | `@tetherto/dev-websites-core/ui/a11y` | `focusRingClassName`, `VisuallyHidden` |
 | `@tetherto/dev-websites-core/ui/carousel` | `Carousel` (+ optional `embla-carousel-react` peer) |
@@ -49,6 +50,24 @@ rm -rf node_modules/@tetherto/dev-websites-core && npm install @tetherto/dev-web
 
 Do **not** import `@tetherto/dev-websites-core/cms` from Client Components — it includes Node-only
 modules (`fs`, Payload, S3). Prefer domain subpaths over the root barrel.
+
+### Analytics
+
+```ts
+import { GtmLoader, createTrackedLink } from '@tetherto/dev-websites-core/analytics'
+import { Link } from '@/i18n/navigation'
+import { analytics } from '@/lib/analytics'
+
+// Delay GTM until window.load (optional `@next/third-parties` peer)
+<GtmLoader gtmId={gtmId} />
+
+// App owns Link + event catalog; core owns click wiring
+export const TrackedLink = createTrackedLink(Link, {
+  docsClicked: analytics.docsClicked,
+  getStartedClicked: analytics.getStartedClicked,
+  externalLinkClicked: analytics.externalLinkClicked,
+})
+```
 
 ### UI theming
 
