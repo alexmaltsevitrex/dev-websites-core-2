@@ -42,6 +42,19 @@ export default defineConfig([
   },
   {
     ...shared,
+    // Client leaves (`'use client'`) stay unbundled so Next preserves the boundary.
+    entry: ['src/analytics/**/*.{ts,tsx}'],
+    unbundle: true,
+    root: 'src',
+    clean: false,
+    platform: 'neutral',
+    deps: {
+      neverBundle: true,
+    },
+    treeshake: false,
+  },
+  {
+    ...shared,
     // One file per module so `import { Button } from '.../ui'` tree-shakes.
     entry: ['src/ui/**/*.{ts,tsx}'],
     unbundle: true,
